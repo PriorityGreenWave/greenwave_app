@@ -5,6 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:greenwave_app/modules/auth/domain/entities/user_authenticaded.dart';
 import 'package:greenwave_app/modules/auth/domain/inputs/login_input.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/authenticate_user.dart';
+import 'package:greenwave_app/modules/auth/domain/usecases/store_authenticaded_user.dart';
 import 'package:greenwave_app/modules/auth/presenter/login/states/login_state.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,6 +16,7 @@ class LoginController = _LoginControllerBase with _$LoginController;
 
 abstract class _LoginControllerBase with Store {
   final AuthenticateUser authenticateUserUsecase;
+  final StoreAuthenticadedUser storeAuthenticadedUserUsecase;
   // final StoreUserAuthenticaded storageUserAuthenticadedUsecase;
   // final UserTokenIsValid userTokenIsValidUsecase;
   // final GetUserToken getUserToken;
@@ -31,12 +33,12 @@ abstract class _LoginControllerBase with Store {
   @observable
   String acessToken;
 
-  _LoginControllerBase({
-    this.authenticateUserUsecase,
-    // this.storageUserAuthenticadedUsecase,
-    // this.userTokenIsValidUsecase,
-    // this.getUserToken
-  }) {
+  _LoginControllerBase(
+      {this.authenticateUserUsecase, this.storeAuthenticadedUserUsecase
+      // this.storageUserAuthenticadedUsecase,
+      // this.userTokenIsValidUsecase,
+      // this.getUserToken
+      }) {
     verifyIfUserAuthenticated();
   }
 
@@ -52,12 +54,12 @@ abstract class _LoginControllerBase with Store {
   }
 
   doStoreUserAuthenticaded(UserAuthenticaded user) async {
-    // final result = await storageUserAuthenticadedUsecase(user);
+    final result = await storeAuthenticadedUserUsecase(user);
 
-    // result.fold((l) => setState(LoginError(l)), (r) {
-    //   setState(LoginSuccess());
-    //   Modular.to.pushNamed('/dashboard');
-    // });
+    result.fold((l) => setState(LoginError(l)), (r) {
+      setState(LoginSuccess());
+      Modular.to.pushNamed('/dashboard');
+    });
   }
 
   // @action

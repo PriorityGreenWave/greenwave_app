@@ -7,5 +7,5 @@ abstract class Environment {
     };
   }
 
-  static const URL = "https://192.168.1.6:7062/api/";
+  static const URL = "http://192.168.1.5:5000/api/";
 }
