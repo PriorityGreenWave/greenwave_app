@@ -12,6 +12,7 @@ import 'package:greenwave_app/modules/auth/infra/repositories/secure_storage_rep
 import 'package:greenwave_app/modules/auth/presenter/login/login_controller.dart';
 import 'package:greenwave_app/modules/auth/presenter/login/login_page.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_controller.dart';
+import 'package:greenwave_app/modules/auth/presenter/register/register_page.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_page.dart';
 import 'package:http/http.dart';
 
@@ -45,6 +46,7 @@ class AppModule extends MainModule {
   List<ModularRouter> get routers => [
         //LOGIN
         ModularRouter('/', child: (_, __) => LoginPage()),
+        ModularRouter('/register-user', child: (_, __) => RegisterPage()),
 
         //DASHBOARD
         ModularRouter('/dashboard', child: (_, __) => DashboardPage()),

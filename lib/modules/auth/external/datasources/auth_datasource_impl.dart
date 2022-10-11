@@ -37,9 +37,10 @@ class AuthDatasourceImpl implements AuthDataSource {
       "senha": input.password,
       "motoristaEmergencia": false
     });
-    final response =
-        await client.post(Environment.URL + "/CreateUsuario", body: body);
+    final response = await client.post(_USER_URI + "/CreateUsuario",
+        body: body,
+        headers: {"Accept": "*/*", "content-type": "application/json"});
 
-    ParserResponse.doParserResponse(response);
+    return ParserResponse.doParserResponse(response);
   }
 }

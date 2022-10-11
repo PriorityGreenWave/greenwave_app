@@ -2,7 +2,7 @@ class RegisterInput {
   String name;
   String email;
   String cpf;
-  DateTime birthday;
+  String birthday;
   String phone;
   String password;
 

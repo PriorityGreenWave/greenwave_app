@@ -5,6 +5,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:greenwave_app/modules/auth/domain/inputs/login_input.dart';
 import 'package:greenwave_app/modules/auth/presenter/login/login_controller.dart';
 import 'package:greenwave_app/modules/auth/presenter/login/states/login_state.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_page.dart';
+import 'package:greenwave_app/modules/util/widget/loading_widget.dart';
 import 'package:greenwave_app/modules/util/widget/message_flushbar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -39,9 +41,9 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                 } else if (state is NotAuthenticaded) {
                   return _loginStartWidget(false);
                 } else if (state is LoginLoading) {
-                  //return LoadingWidget();
+                  return LoadingWidget();
                 } else if (state is LoginSuccess) {
-                  //return DashboardPage();
+                  return DashboardPage();
                 } else {
                   return Center(
                     child: Text("Falhou tudo meu caro kkkk"),

@@ -17,7 +17,7 @@ class RegisterUserImpl implements RegisterUser {
     if (_validateInput(input)) {
       throw Left(InvalidFieldsError());
     }
-    await repository.registerUser(input);
+    return await repository.registerUser(input);
   }
 
   bool _validateInput(RegisterInput input) {
