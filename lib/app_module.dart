@@ -13,8 +13,17 @@ import 'package:greenwave_app/modules/auth/presenter/login/login_controller.dart
 import 'package:greenwave_app/modules/auth/presenter/login/login_page.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_controller.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_page.dart';
+import 'package:greenwave_app/modules/dashboard/domain/usecases/create_car_occurency.dart';
+import 'package:greenwave_app/modules/dashboard/domain/usecases/init_mqtt_client.dart';
+import 'package:greenwave_app/modules/dashboard/domain/usecases/list_car_occurency.dart';
+import 'package:greenwave_app/modules/dashboard/domain/usecases/send_topic_message.dart';
+import 'package:greenwave_app/modules/dashboard/external/datasources/mqtt_datasource_impl.dart';
+import 'package:greenwave_app/modules/dashboard/external/datasources/sqlite_datasources_impl.dart';
+import 'package:greenwave_app/modules/dashboard/infra/repositories/mqtt_repository_impl.dart';
+import 'package:greenwave_app/modules/dashboard/infra/repositories/sqlite_repository_impl.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_page.dart';
 import 'package:http/http.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 class AppModule extends MainModule {
   @override
@@ -23,22 +32,33 @@ class AppModule extends MainModule {
         Bind((i) => AuthenticateUserImpl(i())),
         Bind((i) => StoreAuthenticadedUserImpl(i())),
         Bind((i) => RegisterUserImpl(i())),
+        Bind((i) => CreateCarOccurencyImpl(i())),
+        Bind((i) => InitMqttClientImpl(i())),
+        Bind((i) => ListCarOccurencyImpl(i())),
+        Bind((i) => SendTopicMessageImpl(i())),
 
         /// REPOSITORIES ///
         Bind((i) => AuthRepositoryImpl(i())),
         Bind((i) => SecureStorageRepositoryImpl(i())),
+        Bind((i) => MqttRepositoryImpl(i())),
+        Bind((i) => SqliteRepositoryImpl(i())),
 
         /// DATASOURCES ///
         Bind((i) => AuthDatasourceImpl(i())),
         Bind((i) => SecureStorageDatasourceImpl()),
+        Bind((i) => MqttDatasourceImpl(i())),
+        Bind((i) => SqliteDatasourceImpl()),
 
         /// LIB ///
         Bind((i) => Client()),
         Bind((i) => FlutterSecureStorage()),
+        Bind((i) => MqttServerClient(i(), i())),
 
         /// CONTROLLER ///
         Bind((i) => LoginController(
-            authenticateUserUsecase: i(), storeAuthenticadedUserUsecase: i())),
+            authenticateUserUsecase: i(),
+            storeAuthenticadedUserUsecase: i(),
+            initMqttClient: i())),
         Bind((i) => RegisterController(registerUserUsecase: i()))
       ];
 

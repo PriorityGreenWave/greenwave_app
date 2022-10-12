@@ -1,15 +1,19 @@
 import 'dart:typed_data';
 
+import 'package:greenwave_app/modules/dashboard/domain/inputs/CarOccurencyInput.dart';
+import 'package:greenwave_app/modules/dashboard/infra/datasources/mqtt_datasource.dart';
+import 'package:greenwave_app/modules/dashboard/infra/datasources/sqlite_datasources.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_buffers.dart';
 
-class MqttDatasourceImpl {
+class MqttDatasourceImpl implements MqttDatasource {
   MqttServerClient mqttClient;
+  final SqliteDatasource sqliteDatasource;
   final String AREA_1_LAST_TAG_READ_TOPIC =
       'Area_1/catadioptrico_1/lastTagRead';
 
-  MqttDatasourceImpl() {
+  MqttDatasourceImpl(this.sqliteDatasource) {
     mqttClient = new MqttServerClient.withPort('mqtt.tago.io', 'esp32', 1883);
   }
 
@@ -41,10 +45,15 @@ class MqttDatasourceImpl {
       mqttClient.disconnect();
     }
 
-    mqttClient.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    mqttClient.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) async {
       final MqttPublishMessage message = c[0].payload;
       final payload =
           MqttPublishPayload.bytesToStringAsString(message.payload.message);
+
+      final CarOccurencyInput carOccurencyInput =
+          new CarOccurencyInput(tag: payload, datetime: DateTime(2022));
+
+      await sqliteDatasource.createCarOccurency(carOccurencyInput);
 
       print('Received message:$payload from topic: ${c[0].topic}>');
     });
@@ -52,10 +61,16 @@ class MqttDatasourceImpl {
     return mqttClient;
   }
 
-  Future<void> sendMessageToTopic() async {
+  @override
+  Future<void> initMqttClient() async {
     await connect();
-    final String str = "ahhhhhhhhhhhhhhhhhhhhh";
-    final List<int> codeUnits = str.codeUnits;
+  }
+
+  @override
+  Future<void> sendMessageToTopic(String message) async {
+    await connect();
+
+    final List<int> codeUnits = message.codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     final Uint8Buffer dataBuffer = Uint8Buffer();
     dataBuffer.addAll(unit8List);

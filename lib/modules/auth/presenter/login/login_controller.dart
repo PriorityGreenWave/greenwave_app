@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:greenwave_app/modules/auth/domain/entities/user_authenticaded.dart';
 import 'package:greenwave_app/modules/auth/domain/inputs/login_input.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/authenticate_user.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/store_authenticaded_user.dart';
 import 'package:greenwave_app/modules/auth/presenter/login/states/login_state.dart';
-import 'package:greenwave_app/modules/dashboard/external/datasources/mqtt_datasource_impl.dart';
+import 'package:greenwave_app/modules/dashboard/domain/usecases/init_mqtt_client.dart';
 import 'package:mobx/mobx.dart';
 
 part 'login_controller.g.dart';
@@ -18,6 +17,7 @@ class LoginController = _LoginControllerBase with _$LoginController;
 abstract class _LoginControllerBase with Store {
   final AuthenticateUser authenticateUserUsecase;
   final StoreAuthenticadedUser storeAuthenticadedUserUsecase;
+  final InitMqttClient initMqttClient;
   // final StoreUserAuthenticaded storageUserAuthenticadedUsecase;
   // final UserTokenIsValid userTokenIsValidUsecase;
   // final GetUserToken getUserToken;
@@ -35,11 +35,9 @@ abstract class _LoginControllerBase with Store {
   String acessToken;
 
   _LoginControllerBase(
-      {this.authenticateUserUsecase, this.storeAuthenticadedUserUsecase
-      // this.storageUserAuthenticadedUsecase,
-      // this.userTokenIsValidUsecase,
-      // this.getUserToken
-      }) {
+      {this.authenticateUserUsecase,
+      this.storeAuthenticadedUserUsecase,
+      this.initMqttClient}) {
     verifyIfUserAuthenticated();
   }
 
@@ -57,10 +55,8 @@ abstract class _LoginControllerBase with Store {
   doStoreUserAuthenticaded(UserAuthenticaded user) async {
     final result = await storeAuthenticadedUserUsecase(user);
 
-    var client = new MqttDatasourceImpl();
-    await client.connect();
-
-    result.fold((l) => setState(LoginError(l)), (r) {
+    result.fold((l) => setState(LoginError(l)), (r) async {
+      await initMqttClient();
       setState(LoginSuccess());
       Modular.to.pushNamed('/dashboard');
     });

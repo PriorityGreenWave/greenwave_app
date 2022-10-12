@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:greenwave_app/modules/dashboard/external/datasources/mqtt_datasource_impl.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key key}) : super(key: key);
@@ -21,8 +20,6 @@ class _DashboardPageState extends State<DashboardPage> {
   int _counter = 0;
 
   void _incrementCounter() async {
-    var client = new MqttDatasourceImpl();
-    client.sendMessageToTopic();
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
