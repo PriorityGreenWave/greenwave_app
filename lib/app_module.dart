@@ -22,6 +22,7 @@ import 'package:greenwave_app/modules/dashboard/external/datasources/sqlite_data
 import 'package:greenwave_app/modules/dashboard/infra/repositories/mqtt_repository_impl.dart';
 import 'package:greenwave_app/modules/dashboard/infra/repositories/sqlite_repository_impl.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_page.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/traffic_map_page.dart';
 import 'package:http/http.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -70,6 +71,9 @@ class AppModule extends MainModule {
 
         //DASHBOARD
         ModularRouter('/dashboard', child: (_, __) => DashboardPage()),
+
+        //TRAFFICMAP
+        ModularRouter('/traffic-map', child: (_, __) => TrafficMapPage())
       ];
 
   @override

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class MessageFlushbar extends StatelessWidget {
   final String message;
   final bool error;
-  const MessageFlushbar({this.message, this.error, Key key}) : super(key: key);
+  const MessageFlushbar({this.message, this.error, Key key});
 
   @override
   Widget build(BuildContext context) {
