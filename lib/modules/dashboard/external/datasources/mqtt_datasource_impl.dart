@@ -3,17 +3,19 @@ import 'dart:typed_data';
 import 'package:greenwave_app/modules/dashboard/domain/inputs/CarOccurencyInput.dart';
 import 'package:greenwave_app/modules/dashboard/infra/datasources/mqtt_datasource.dart';
 import 'package:greenwave_app/modules/dashboard/infra/datasources/sqlite_datasources.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/traffic_map_controller.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_buffers.dart';
 
 class MqttDatasourceImpl implements MqttDatasource {
+  TrafficMapController trafficMapController;
   MqttServerClient mqttClient;
   final SqliteDatasource sqliteDatasource;
   final String AREA_1_LAST_TAG_READ_TOPIC =
       'Area_1/catadioptrico_1/lastTagRead';
 
-  MqttDatasourceImpl(this.sqliteDatasource) {
+  MqttDatasourceImpl(this.sqliteDatasource, this.trafficMapController) {
     mqttClient = new MqttServerClient.withPort('mqtt.tago.io', 'esp32', 1883);
   }
 
@@ -53,7 +55,8 @@ class MqttDatasourceImpl implements MqttDatasource {
       final CarOccurencyInput carOccurencyInput =
           new CarOccurencyInput(tag: payload, datetime: DateTime(2022));
 
-      await sqliteDatasource.createCarOccurency(carOccurencyInput);
+      await trafficMapController.doCreateCarOccurency(carOccurencyInput);
+      //await sqliteDatasource.createCarOccurency(carOccurencyInput);
 
       print('Received message:$payload from topic: ${c[0].topic}>');
     });

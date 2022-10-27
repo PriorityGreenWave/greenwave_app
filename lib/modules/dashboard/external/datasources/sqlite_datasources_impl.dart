@@ -29,15 +29,19 @@ class SqliteDatasourceImpl implements SqliteDatasource {
   Future<List<CarOccurencyEntity>> listCarOccurency(DateTime dateFilter) async {
     final Database db = await _getDatabase();
 
-    final List<Map<String, dynamic>> maps = await db.query('CarOccurency',
-        where: 'datetime =' + dateFilter.toString());
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT id, tag, datetime FROM CarOccurency WHERE datetime =?',
+        [dateFilter.toString()]);
+
+    // final List<Map<String, dynamic>> maps = await db.query('CarOccurency',
+    //     where: 'datetime = ${dateFilter.toString()}');
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
       return CarOccurencyEntity(
         id: maps[i]['id'],
         tag: maps[i]['tag'],
-        datetime: maps[i]['datetime'],
+        datetime: DateTime.parse(maps[i]['datetime']),
       );
     });
   }
