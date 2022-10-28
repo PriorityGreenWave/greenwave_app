@@ -89,7 +89,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                             keyboardType: TextInputType.emailAddress,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
-                              hoverColor: Colors.yellow,
+                              hoverColor: Color(0xFF539161),
                               labelText: "Email",
                               labelStyle: TextStyle(color: Colors.grey),
                               hintText: "Informe o email",
@@ -118,6 +118,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                               labelStyle: TextStyle(color: Colors.grey),
                               hintText: "Senha",
                               hintStyle: TextStyle(color: Colors.grey),
+                              focusColor: Color(0xFF539161),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -129,7 +130,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                           child: Column(
                             children: [
                               FlatButton(
-                                color: Color(0xFF0076bc),
+                                color: Color(0xFF539161),
                                 child: Container(
                                   width: double.maxFinite,
                                   height: 50,
@@ -167,7 +168,8 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                                       padding: EdgeInsets.only(top: 20),
                                       child: RichText(
                                         text: TextSpan(
-                                          style: TextStyle(color: Colors.blue),
+                                          style: TextStyle(
+                                              color: Color(0xFF539161)),
                                           text: 'Cadastrar-se',
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {
@@ -181,7 +183,8 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                                       padding: EdgeInsets.only(top: 20),
                                       child: RichText(
                                         text: TextSpan(
-                                          style: TextStyle(color: Colors.blue),
+                                          style: TextStyle(
+                                              color: Color(0xFF539161)),
                                           text: 'Esqueceu a senha',
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () {

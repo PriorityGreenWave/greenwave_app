@@ -4,6 +4,7 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:greenwave_app/modules/dashboard/domain/entities/CarOccurencyEntity.dart';
+import 'package:greenwave_app/modules/dashboard/domain/inputs/CarOccurencyInput.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/states/states.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/traffic_map_controller.dart';
 import 'package:greenwave_app/modules/util/widget/loading_widget.dart';
@@ -23,43 +24,59 @@ class _TrafficMapPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: SizedBox(
-        child: Column(
-          children: [
-            Observer(
-              builder: (_) {
-                var state = controller.state;
+      body: SafeArea(
+        child: Observer(
+          builder: (_) {
+            var state = controller.state;
 
-                if (state is TrafficMapError) {
-                  //this.errorMessage = state.error.message;
-                  return _trafficMapPage(); //mudar
-                }
+            if (state is TrafficMapError) {
+              // this.errorMessage = state.error.message;
+              return _trafficMapPage(); //mudar
+            }
 
-                if (state is TrafficMapStart) {
-                  return _trafficMapPage();
-                } else if (state is TrafficMapLoading) {
-                  return LoadingWidget();
-                } else if (state is RefreshTrafficOccurency) {
-                  setState(() {
-                    carOccurencyList = state.carOccurencyList;
-                    ;
-                  });
-                  return _trafficMapPage();
-                } else {
-                  return Center(
-                    child: Text("Falhou tudo meu caro kkkk"),
-                  );
-                }
-              },
-            ),
-          ],
+            if (state is TrafficMapStart) {
+              return _trafficMapPage();
+            } else if (state is TrafficMapLoading) {
+              return _trafficMapPage();
+            } else if (state is RefreshTrafficOccurency) {
+              carOccurencyList = state.carOccurencyList;
+              // setState(() {
+              //   carOccurencyList = state.carOccurencyList;
+
+              // });
+              return _trafficMapPage();
+            } else {
+              return _trafficMapPage();
+            }
+          },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => createCarOccurency(),
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }
 
+  Future<void> createCarOccurency() async {
+    final x = new CarOccurencyInput(
+        tag: "Teste do mapa", datetime: new DateTime(2022));
+    await controller.doCreateCarOccurency(x);
+  }
+
+  Color decideColor(int carsOccurencyQuantity) {
+    if (carsOccurencyQuantity < 5) {
+      return Color.fromRGBO(2, 181, 26, 0.5);
+    } else if (carsOccurencyQuantity >= 5 && carsOccurencyQuantity < 10) {
+      return Color.fromRGBO(255, 187, 0, 0.5);
+    } else {
+      return Color.fromRGBO(255, 0, 0, 0.5);
+    }
+  }
+
   Widget _trafficMapPage() {
+    print(carOccurencyList.length);
     return FlutterMap(
       //mapController: ...,
       options: MapOptions(
@@ -76,10 +93,9 @@ class _TrafficMapPageState
         ),
         CircleLayerOptions(circles: [
           CircleMarker(
-            radius: 50,
-            point: latLng.LatLng(-19.917298, -43.939651),
-            color: Color.fromRGBO(255, 0, 0, 0.5),
-          )
+              radius: 50,
+              point: latLng.LatLng(-19.917298, -43.939651),
+              color: decideColor(carOccurencyList.length))
         ]),
       ],
     );

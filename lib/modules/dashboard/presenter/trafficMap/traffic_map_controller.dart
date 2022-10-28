@@ -20,7 +20,7 @@ abstract class _TrafficMapControllerBase with Store {
   TrafficMapState state = TrafficMapStart();
 
   Future<void> doCreateCarOccurency(CarOccurencyInput input) async {
-    setState(TrafficMapLoading());
+    // setState(TrafficMapLoading());
     await createCarOccurencyUsecase(input);
     await doListCarOccurency();
     //Modular.to.pushNamed('/');
