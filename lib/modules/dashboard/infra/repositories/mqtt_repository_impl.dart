@@ -7,12 +7,14 @@ class MqttRepositoryImpl implements MqttRepository {
   MqttRepositoryImpl(this.datasource);
 
   @override
-  Future<void> sendMessageToTopic(String message) async {
-    await datasource.sendMessageToTopic(message);
+  Future<void> sendMessageToTopic(
+      String message, Function refreshCarTraffic) async {
+    await datasource.sendMessageToTopic(message, refreshCarTraffic);
   }
 
   @override
-  Future<void> initMqttClient() async {
-    await datasource.initMqttClient();
+  Future<void> initMqttClient(
+      Future<void> Function() doRefreshCarOccurencyList) async {
+    await datasource.initMqttClient(doRefreshCarOccurencyList);
   }
 }

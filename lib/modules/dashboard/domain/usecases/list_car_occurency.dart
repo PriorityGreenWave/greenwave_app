@@ -12,7 +12,7 @@ class ListCarOccurencyImpl implements ListCarOccurency {
 
   @override
   Future<List<CarOccurencyEntity>> call() async {
-    final DateTime dateFilter = DateTime(2022);
+    final DateTime dateFilter = new DateTime.now();
 
     final List<CarOccurencyEntity> carOccurencyList =
         await repository.listCarOccurency(dateFilter);

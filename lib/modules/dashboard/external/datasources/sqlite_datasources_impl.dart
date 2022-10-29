@@ -29,9 +29,11 @@ class SqliteDatasourceImpl implements SqliteDatasource {
   Future<List<CarOccurencyEntity>> listCarOccurency(DateTime dateFilter) async {
     final Database db = await _getDatabase();
 
+    DateTime compareDateFilter = dateFilter.subtract(new Duration(minutes: 5));
+
     final List<Map<String, dynamic>> maps = await db.rawQuery(
-        'SELECT id, tag, datetime FROM CarOccurency WHERE datetime =?',
-        [dateFilter.toString()]);
+        'SELECT id, tag, datetime FROM CarOccurency WHERE datetime >=? AND datetime <=?',
+        [compareDateFilter.toString(), dateFilter.toString()]);
 
     // final List<Map<String, dynamic>> maps = await db.query('CarOccurency',
     //     where: 'datetime = ${dateFilter.toString()}');

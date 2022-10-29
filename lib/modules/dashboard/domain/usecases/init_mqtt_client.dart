@@ -1,7 +1,7 @@
 import 'package:greenwave_app/modules/dashboard/domain/repositories/mqtt_repository.dart';
 
 abstract class InitMqttClient {
-  Future<void> call();
+  Future<void> call(Future<void> Function() doRefreshCarOccurencyList);
 }
 
 class InitMqttClientImpl implements InitMqttClient {
@@ -10,7 +10,7 @@ class InitMqttClientImpl implements InitMqttClient {
   InitMqttClientImpl(this.repository);
 
   @override
-  Future<void> call() async {
-    await repository.initMqttClient();
+  Future<void> call(Future<void> Function() doRefreshCarOccurencyList) async {
+    await repository.initMqttClient(doRefreshCarOccurencyList);
   }
 }

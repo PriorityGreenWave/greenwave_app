@@ -48,7 +48,7 @@ class AppModule extends MainModule {
         /// DATASOURCES ///
         Bind((i) => AuthDatasourceImpl(i())),
         Bind((i) => SecureStorageDatasourceImpl()),
-        Bind((i) => MqttDatasourceImpl(i(), i())),
+        Bind((i) => MqttDatasourceImpl(i())),
         Bind((i) => SqliteDatasourceImpl()),
 
         /// LIB ///
@@ -58,12 +58,15 @@ class AppModule extends MainModule {
 
         /// CONTROLLER ///
         Bind((i) => LoginController(
-            authenticateUserUsecase: i(),
-            storeAuthenticadedUserUsecase: i(),
-            initMqttClient: i())),
+            authenticateUserUsecase: i(), storeAuthenticadedUserUsecase: i()
+            // initMqttClient: i()
+            )),
         Bind((i) => RegisterController(registerUserUsecase: i())),
         Bind((i) => TrafficMapController(
-            createCarOccurencyUsecase: i(), listCarOccurencyUsecase: i()))
+            createCarOccurencyUsecase: i(),
+            listCarOccurencyUsecase: i(),
+            sendTopicMessageUsecase: i(),
+            initMqttClientUsecase: i()))
       ];
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:greenwave_app/modules/dashboard/domain/inputs/CarOccurencyInput.dart';
 import 'package:greenwave_app/modules/dashboard/infra/datasources/mqtt_datasource.dart';
 import 'package:greenwave_app/modules/dashboard/infra/datasources/sqlite_datasources.dart';
@@ -9,17 +10,20 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_buffers.dart';
 
 class MqttDatasourceImpl implements MqttDatasource {
-  TrafficMapController trafficMapController;
   MqttServerClient mqttClient;
   final SqliteDatasource sqliteDatasource;
+
+  // final VoidCallback refreshTrafficState;
+
   final String AREA_1_LAST_TAG_READ_TOPIC =
       'Area_1/catadioptrico_1/lastTagRead';
 
-  MqttDatasourceImpl(this.sqliteDatasource, this.trafficMapController) {
+  MqttDatasourceImpl(this.sqliteDatasource) {
     mqttClient = new MqttServerClient.withPort('mqtt.tago.io', 'esp32', 1883);
   }
 
-  Future<void> connect() async {
+  Future<void> connect(
+      Future<void> Function() doRefreshCarOccurencyList) async {
     mqttClient.logging(on: true);
     mqttClient.onConnected = onConnected;
     mqttClient.onDisconnected = onDisconnected;
@@ -33,7 +37,7 @@ class MqttDatasourceImpl implements MqttDatasource {
         // .withClientIdentifier("greenwave-app")
         .keepAliveFor(60)
         .withWillTopic('Area_1/devices')
-        .withWillMessage('1')
+        .withWillMessage('Conectado')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 
@@ -52,26 +56,32 @@ class MqttDatasourceImpl implements MqttDatasource {
       final payload =
           MqttPublishPayload.bytesToStringAsString(message.payload.message);
 
+      final currentDate = new DateTime.now();
       final CarOccurencyInput carOccurencyInput =
-          new CarOccurencyInput(tag: payload, datetime: DateTime(2022));
+          new CarOccurencyInput(tag: payload, datetime: currentDate);
 
-      await trafficMapController.doCreateCarOccurency(carOccurencyInput);
-      //await sqliteDatasource.createCarOccurency(carOccurencyInput);
+      // await refreshTrafficState();
+      //await trafficMapController.doCreateCarOccurency(carOccurencyInput);
+      await sqliteDatasource.createCarOccurency(carOccurencyInput);
 
       print('Received message:$payload from topic: ${c[0].topic}>');
+
+      await doRefreshCarOccurencyList();
     });
 
     return mqttClient;
   }
 
   @override
-  Future<void> initMqttClient() async {
-    await connect();
+  Future<void> initMqttClient(
+      Future<void> Function() doRefreshCarOccurencyList) async {
+    await connect(doRefreshCarOccurencyList);
   }
 
   @override
-  Future<void> sendMessageToTopic(String message) async {
-    await connect();
+  Future<void> sendMessageToTopic(
+      String message, Function refreshCarTraffic) async {
+    //await connect();
 
     final List<int> codeUnits = message.codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
@@ -81,6 +91,8 @@ class MqttDatasourceImpl implements MqttDatasource {
     mqttClient.publishMessage(
         AREA_1_LAST_TAG_READ_TOPIC, MqttQos.atLeastOnce, dataBuffer,
         retain: true);
+
+    refreshCarTraffic();
   }
 
   // connection succeeded

@@ -18,9 +18,6 @@ abstract class _LoginControllerBase with Store {
   final AuthenticateUser authenticateUserUsecase;
   final StoreAuthenticadedUser storeAuthenticadedUserUsecase;
   final InitMqttClient initMqttClient;
-  // final StoreUserAuthenticaded storageUserAuthenticadedUsecase;
-  // final UserTokenIsValid userTokenIsValidUsecase;
-  // final GetUserToken getUserToken;
 
   @observable
   bool isAuthenticated;
@@ -56,7 +53,7 @@ abstract class _LoginControllerBase with Store {
     final result = await storeAuthenticadedUserUsecase(user);
 
     result.fold((l) => setState(LoginError(l)), (r) async {
-      await initMqttClient();
+      //await initMqttClient();
       setState(LoginSuccess());
       Modular.to.pushNamed('/dashboard');
     });
