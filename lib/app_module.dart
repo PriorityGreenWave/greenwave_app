@@ -21,6 +21,7 @@ import 'package:greenwave_app/modules/dashboard/external/datasources/mqtt_dataso
 import 'package:greenwave_app/modules/dashboard/external/datasources/sqlite_datasources_impl.dart';
 import 'package:greenwave_app/modules/dashboard/infra/repositories/mqtt_repository_impl.dart';
 import 'package:greenwave_app/modules/dashboard/infra/repositories/sqlite_repository_impl.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_controller.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_page.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/traffic_map_controller.dart';
 import 'package:greenwave_app/modules/dashboard/presenter/trafficMap/traffic_map_page.dart';
@@ -62,6 +63,8 @@ class AppModule extends MainModule {
             // initMqttClient: i()
             )),
         Bind((i) => RegisterController(registerUserUsecase: i())),
+        Bind((i) => DashboardController(
+            initMqttClientUsecase: i(), listCarOccurencyUsecase: i())),
         Bind((i) => TrafficMapController(
             createCarOccurencyUsecase: i(),
             listCarOccurencyUsecase: i(),

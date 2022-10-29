@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_group_sliver/flutter_group_sliver.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:greenwave_app/modules/dashboard/domain/entities/CarOccurencyEntity.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/dashboard/dashboard_controller.dart';
+import 'package:greenwave_app/modules/dashboard/presenter/dashboard/states/state.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key key});
@@ -18,71 +22,9 @@ class DashboardPage extends StatefulWidget {
   _DashboardPageState createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
-  int _counter = 0;
-
-  void _incrementCounter() async {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   // This method is rerun every time setState is called, for instance as done
-  //   // by the _incrementCounter method above.
-  //   //
-  //   // The Flutter framework has been optimized to make rerunning build methods
-  //   // fast, so that you can just rebuild anything that needs updating rather
-  //   // than having to individually change instances of widgets.
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       // Here we take the value from the MyHomePage object that was created by
-  //       // the App.build method, and use it to set our appbar title.
-  //       title: Text("TITLE"),
-  //     ),
-  //     body: Center(
-  //       // Center is a layout widget. It takes a single child and positions it
-  //       // in the middle of the parent.
-  //       child: Column(
-  //         // Column is also a layout widget. It takes a list of children and
-  //         // arranges them vertically. By default, it sizes itself to fit its
-  //         // children horizontally, and tries to be as tall as its parent.
-  //         //
-  //         // Invoke "debug painting" (press "p" in the console, choose the
-  //         // "Toggle Debug Paint" action from the Flutter Inspector in Android
-  //         // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-  //         // to see the wireframe for each widget.
-  //         //
-  //         // Column has various properties to control how it sizes itself and
-  //         // how it positions its children. Here we use mainAxisAlignment to
-  //         // center the children vertically; the main axis here is the vertical
-  //         // axis because Columns are vertical (the cross axis would be
-  //         // horizontal).
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: <Widget>[
-  //           Text(
-  //             'You have pushed the button this many times:',
-  //           ),
-  //           Text(
-  //             '$_counter',
-  //             style: Theme.of(context).textTheme.headline4,
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //     floatingActionButton: FloatingActionButton(
-  //       onPressed: () => Modular.to.pushNamed('/traffic-map'),
-  //       tooltip: 'Increment',
-  //       child: Icon(Icons.add),
-  //     ), // This trailing comma makes auto-formatting nicer for build methods.
-  //   );
-  // }
+class _DashboardPageState
+    extends ModularState<DashboardPage, DashboardController> {
+  List<CarOccurencyEntity> carOccurencyList;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +55,33 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
       ),
-      body: _buildDashboarPage(),
+      body: SafeArea(
+        child: Observer(
+          builder: (_) {
+            var state = controller.state;
+
+            if (state is DashboardError) {
+              // this.errorMessage = state.error.message;
+              return _buildDashboarPage(); //mudar
+            }
+
+            if (state is DashboardStart) {
+              return _buildDashboarPage();
+            } else if (state is DashboardLoading) {
+              return _buildDashboarPage();
+            } else if (state is DashboardTrafficOccurency) {
+              carOccurencyList = state.carOccurencyList;
+              // setState(() {
+              //   carOccurencyList = state.carOccurencyList;
+
+              // });
+              return _buildDashboarPage();
+            } else {
+              return _buildDashboarPage();
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -181,7 +149,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          '2',
+                                          carOccurencyList.length.toString(),
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 35,
@@ -276,14 +244,14 @@ class _DashboardPageState extends State<DashboardPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Icon(
-                          Icons.person,
-                          size: 40,
+                          Icons.map,
+                          size: 70,
                           color: Colors.yellow[900],
                         ),
                         Text(
                           'Mapa de transito',
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 20,
                               color: Colors.yellow[900],
                               fontWeight: FontWeight.bold),
                         ),
@@ -307,14 +275,14 @@ class _DashboardPageState extends State<DashboardPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Icon(
-                        Icons.payment,
-                        size: 40,
+                        Icons.admin_panel_settings,
+                        size: 70,
                         color: Colors.green[300],
                       ),
                       Text(
                         'Administração',
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.green[300]),
                       ),
