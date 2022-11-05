@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:greenwave_app/modules/auth/domain/entities/user.dart';
 import 'package:greenwave_app/modules/auth/domain/entities/user_authenticaded.dart';
 import 'package:greenwave_app/modules/auth/domain/errors/errors.dart';
 import 'package:greenwave_app/modules/auth/infra/datasources/secure_storage_datasource.dart';
@@ -32,6 +33,18 @@ class SecureStorageDatasourceImpl implements SecureStorageDatasource {
       await storage.write(key: _KEY_USER, value: stringUser);
     } catch (e) {
       throw StorageTokenError();
+    }
+  }
+
+  @override
+  Future<User> getLoggedUser() async {
+    try {
+      final stringUser = await storage.read(key: _KEY_USER);
+      final userMap = jsonDecode(stringUser);
+      final user = User.fromJson(userMap);
+      return user;
+    } catch (e) {
+      throw GetTokenError();
     }
   }
 

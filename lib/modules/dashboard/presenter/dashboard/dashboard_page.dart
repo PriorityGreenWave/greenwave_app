@@ -269,25 +269,30 @@ class _DashboardPageState
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.admin_panel_settings,
-                        size: 70,
-                        color: Colors.green[300],
-                      ),
-                      Text(
-                        'Administração',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green[300]),
-                      ),
-                    ],
+                child: new InkWell(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.admin_panel_settings,
+                          size: 70,
+                          color: Colors.green[300],
+                        ),
+                        Text(
+                          'Administração',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[300]),
+                        ),
+                      ],
+                    ),
                   ),
+                  onTap: () {
+                    return Modular.to.pushNamed('/register-car');
+                  },
                 ),
               ),
             ],

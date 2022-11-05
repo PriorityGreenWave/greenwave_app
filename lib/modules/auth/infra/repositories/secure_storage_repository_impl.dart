@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:greenwave_app/modules/auth/domain/entities/user.dart';
 import 'package:greenwave_app/modules/auth/domain/entities/user_authenticaded.dart';
 import 'package:greenwave_app/modules/auth/domain/errors/errors.dart';
 import 'package:greenwave_app/modules/auth/domain/repositories/secure_storage_repository.dart';
@@ -19,5 +20,10 @@ class SecureStorageRepositoryImpl implements SecureStorageRepository {
     } catch (e) {
       return Left(StorageTokenError());
     }
+  }
+
+  @override
+  Future<User> getLoggedUser() async {
+    return await datasource.getLoggedUser();
   }
 }

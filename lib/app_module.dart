@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:greenwave_app/app_widget.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/authenticate_user.dart';
+import 'package:greenwave_app/modules/auth/domain/usecases/get_loggedUser.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/register_user.dart';
 import 'package:greenwave_app/modules/auth/domain/usecases/store_authenticaded_user.dart';
 import 'package:greenwave_app/modules/auth/external/datasources/auth_datasource_impl.dart';
@@ -13,6 +14,11 @@ import 'package:greenwave_app/modules/auth/presenter/login/login_controller.dart
 import 'package:greenwave_app/modules/auth/presenter/login/login_page.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_controller.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_page.dart';
+import 'package:greenwave_app/modules/car/domain/usecases/register_car_usecase.dart';
+import 'package:greenwave_app/modules/car/external/datasources/car_datasource_impl.dart';
+import 'package:greenwave_app/modules/car/infra/repositories/car_repository_impl.dart';
+import 'package:greenwave_app/modules/car/presenter/registerCar/register_car_page.dart';
+import 'package:greenwave_app/modules/car/presenter/registerCar/states/register_car_controller.dart';
 import 'package:greenwave_app/modules/dashboard/domain/usecases/create_car_occurency.dart';
 import 'package:greenwave_app/modules/dashboard/domain/usecases/init_mqtt_client.dart';
 import 'package:greenwave_app/modules/dashboard/domain/usecases/list_car_occurency.dart';
@@ -39,18 +45,22 @@ class AppModule extends MainModule {
         Bind((i) => InitMqttClientImpl(i())),
         Bind((i) => ListCarOccurencyImpl(i())),
         Bind((i) => SendTopicMessageImpl(i())),
+        Bind((i) => RegisterCarUsecaseImpl(i())),
+        Bind((i) => GetLoggedUserImpl(i())),
 
         /// REPOSITORIES ///
         Bind((i) => AuthRepositoryImpl(i())),
         Bind((i) => SecureStorageRepositoryImpl(i())),
         Bind((i) => MqttRepositoryImpl(i())),
         Bind((i) => SqliteRepositoryImpl(i())),
+        Bind((i) => CarRepositoryImpl(i())),
 
         /// DATASOURCES ///
         Bind((i) => AuthDatasourceImpl(i())),
         Bind((i) => SecureStorageDatasourceImpl()),
         Bind((i) => MqttDatasourceImpl(i())),
         Bind((i) => SqliteDatasourceImpl()),
+        Bind((i) => CarDatasourceImpl(i())),
 
         /// LIB ///
         Bind((i) => Client()),
@@ -69,7 +79,9 @@ class AppModule extends MainModule {
             createCarOccurencyUsecase: i(),
             listCarOccurencyUsecase: i(),
             sendTopicMessageUsecase: i(),
-            initMqttClientUsecase: i()))
+            initMqttClientUsecase: i())),
+        Bind((i) =>
+            RegisterCarController(getLoggedUser: i(), registerCarUsercase: i()))
       ];
 
   @override
@@ -82,7 +94,10 @@ class AppModule extends MainModule {
         ModularRouter('/dashboard', child: (_, __) => DashboardPage()),
 
         //TRAFFICMAP
-        ModularRouter('/traffic-map', child: (_, __) => TrafficMapPage())
+        ModularRouter('/traffic-map', child: (_, __) => TrafficMapPage()),
+
+        //CAR
+        ModularRouter('/register-car', child: (_, __) => RegisterCarPage())
       ];
 
   @override
