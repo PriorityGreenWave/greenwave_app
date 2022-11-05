@@ -14,6 +14,7 @@ import 'package:greenwave_app/modules/auth/presenter/login/login_controller.dart
 import 'package:greenwave_app/modules/auth/presenter/login/login_page.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_controller.dart';
 import 'package:greenwave_app/modules/auth/presenter/register/register_page.dart';
+import 'package:greenwave_app/modules/car/domain/usecases/get_user_cars.dart';
 import 'package:greenwave_app/modules/car/domain/usecases/register_car_usecase.dart';
 import 'package:greenwave_app/modules/car/external/datasources/car_datasource_impl.dart';
 import 'package:greenwave_app/modules/car/infra/repositories/car_repository_impl.dart';
@@ -47,6 +48,7 @@ class AppModule extends MainModule {
         Bind((i) => SendTopicMessageImpl(i())),
         Bind((i) => RegisterCarUsecaseImpl(i())),
         Bind((i) => GetLoggedUserImpl(i())),
+        Bind((i) => GetUserCarsImpl(i())),
 
         /// REPOSITORIES ///
         Bind((i) => AuthRepositoryImpl(i())),

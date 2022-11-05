@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:greenwave_app/modules/auth/domain/entities/user.dart';
+import 'package:greenwave_app/modules/car/domain/entities/CarEntity.dart';
 import 'package:greenwave_app/modules/car/domain/inputs/CarInput.dart';
 import 'package:greenwave_app/modules/car/domain/utils/ParserResponse.dart';
 import 'package:greenwave_app/modules/car/infra/datasources/car_datasource.dart';
@@ -27,6 +29,14 @@ class CarDatasourceImpl implements CarDatasource {
     });
     final response = await client.post(_CAR_URI + "/CreateVeiculo",
         body: body,
+        headers: {"Accept": "*/*", "content-type": "application/json"});
+
+    return ParserResponse.doParserResponse(response);
+  }
+
+  @override
+  Future<List<CarEntity>> doGetUserCars(User user) async {
+    final response = await client.get(_CAR_URI + "/ID", //trocar
         headers: {"Accept": "*/*", "content-type": "application/json"});
 
     return ParserResponse.doParserResponse(response);
